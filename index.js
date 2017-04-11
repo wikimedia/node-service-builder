@@ -30,17 +30,10 @@ function getOptions() {
             describe: 'be verbose',
             type: 'boolean',
             global: true
-        },
-        v: {
-            alias: 'version',
-            default: false,
-            describe: 'print the service\'s version and exit',
-            type: 'boolean',
-            global: true
         }
     })
-    .command('docker-start', 'starts the service in a Docker container')
-    .command('docker-test', 'starts the test process in a Docker container')
+    .command('run', 'starts the service in a Docker container')
+    .command('test', 'starts the test process in a Docker container')
     .command('build', 'builds the service\'s package and deploy repo', {
         f: {
             alias: 'force',
@@ -107,7 +100,6 @@ function getOptions() {
     return {
         num_workers: args.numWorkers,
         configFile: args.config,
-        displayVersion: args.v,
         build: args.build,
         buildDeploy: args.deployRepo,
         reshrinkwrap: args.reshrinkwrap,
