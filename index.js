@@ -126,7 +126,7 @@ function getAppBasePath(config) {
         return process.env.APP_BASE_PATH;
     } else if (config.app_base_path) {
         return config.app_base_path;
-    } else if (/\/node_modules\/service-runner\/lib$/.test(__dirname)) {
+    } else if (/\/node_modules\/service-builder\/lib$/.test(__dirname)) {
         // Default to guessing the base path
         return path.resolve(`${__dirname}/../../../`);
     } else {
