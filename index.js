@@ -86,12 +86,12 @@ function getOptions() {
 
     args.deployRepo = args.deployRepo || args.review;
     args.build = args._.indexOf('build') !== -1 || args.deployRepo;
-    args.dockerStart = args._.indexOf('docker-start') !== -1;
-    args.dockerTest = args._.indexOf('docker-test') !== -1;
+    args.start = args._.indexOf('start') !== -1;
+    args.test = args._.indexOf('test') !== -1;
     args.generate = args._.indexOf('generate') !== -1;
     args.deployRepo = args.deployRepo || args.build || args.building;
 
-    if ([args.build, args.dockerStart, args.dockerTest, args.generate]
+    if ([args.build, args.start, args.test, args.generate]
         .filter(x => !!x).length > 1) {
         console.error('Only one command can be specified!');
         process.exit(1);
@@ -99,15 +99,14 @@ function getOptions() {
 
     return {
         num_workers: args.numWorkers,
-        configFile: args.config,
+        configFilePath: args.config,
         build: args.build,
         buildDeploy: args.deployRepo,
         reshrinkwrap: args.reshrinkwrap,
         sendReview: args.review,
-        dockerStart: args.dockerStart || args.running,
-        dockerTest: args.dockerTest || args.testing,
+        start: args.start || args.running,
+        test: args.test || args.testing,
         generate: args.generate,
-        useDocker: args.deployRepo || args.dockerStart || args.dockerTest || args.generate,
         force: args.force,
         verbose: args.verbose
     };
@@ -116,11 +115,11 @@ function getOptions() {
 function getAppBasePath(config) {
     if (process.env.APP_BASE_PATH) {
         return process.env.APP_BASE_PATH;
-    } else if (config.app_base_path) {
+    } else if (config && config.app_base_path) {
         return config.app_base_path;
-    } else if (/\/node_modules\/service-builder\/lib$/.test(__dirname)) {
+    } else if (/\/node_modules\/service-builder$/.test(__dirname)) {
         // Default to guessing the base path
-        return path.resolve(`${__dirname}/../../../`);
+        return path.resolve(`${__dirname}/../../`);
     } else {
         return path.resolve('./');
     }
@@ -142,16 +141,35 @@ function replaceEnvVars(config) {
     });
 }
 
+function requiresConfig(options) {
+    return !options.generate && (options.start || options.test);
+}
+
 function main() {
     const options = getOptions();
-    let configFile = options.configFile;
-    if (!/^\//.test(configFile)) {
+
+    let configFilePath = options.configFilePath || 'config.yaml';
+    if (!/^\//.test(configFilePath)) {
         // resolve relative paths
-        configFile = path.resolve(`${process.cwd()}/${configFile}`);
+        configFilePath = path.resolve(`${process.cwd()}/${configFilePath}`);
     }
-    const configSource = replaceEnvVars(fs.readFileSync(configFile));
-    const config = yaml.load(configSource);
+
+    if (requiresConfig(options) && !fs.existsSync(configFilePath)) {
+        console.error('Service config is required but not provided');
+        process.exit(1);
+    }
+
+    let config;
+    if (fs.existsSync(configFilePath)) {
+        const configSource = replaceEnvVars(fs.readFileSync(configFilePath));
+        config = yaml.load(configSource);
+    }
+
+    console.log(options);
     options.basePath = getAppBasePath(config);
-    return docker(options, config);
+    options.config = config;
+    options.package = require(path.join(options.basePath, 'package.json'));
+
+    return docker(options);
 }
 main();
