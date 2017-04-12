@@ -165,7 +165,6 @@ function main() {
         config = yaml.load(configSource);
     }
 
-    console.log(options);
     options.basePath = getAppBasePath(config);
     options.config = config;
     options.package = require(path.join(options.basePath, 'package.json'));
