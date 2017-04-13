@@ -159,7 +159,7 @@ function main() {
         process.exit(1);
     }
 
-    let config;
+    let config = {};
     if (fs.existsSync(configFilePath)) {
         const configSource = replaceEnvVars(fs.readFileSync(configFilePath));
         config = yaml.load(configSource);
