@@ -1,5 +1,5 @@
 {
-  "name": "service-builder",
+  "name": "wikimedia-service-builder",
   "version": "0.1.0",
   "description": "Docker-based build script for node.js services",
   "main": "index.js",
