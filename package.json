@@ -1,6 +1,6 @@
 {
   "name": "wikimedia-service-builder",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Docker-based build script for node.js services",
   "main": "index.js",
   "bin": {
@@ -12,18 +12,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pchelolo/node-service-builder.git"
+    "url": "git+https://github.com/wikimedia/node-service-builder.git"
   },
   "keywords": [
     "services",
     "docker"
   ],
   "author": "Wikimedia service team <services@wikimedia.org>",
+  "contributors": [
+    "Petr Pchelko <ppchelko@wikimedia.org>",
+    "Marko Obrovac <mobrovac@wikimedia.org>"
+  ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/Pchelolo/node-service-builder/issues"
+    "url": "https://github.com/wikimedia/node-service-builder/issues"
   },
-  "homepage": "https://github.com/Pchelolo/node-service-builder#readme",
+  "homepage": "https://github.com/wikimedia/node-service-builder#readme",
   "engines": {
     "node": ">=4.2.2"
   },
